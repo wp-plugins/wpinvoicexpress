@@ -13,27 +13,39 @@ class RCDashboard implements Extension {
 
 		});
 
+		add_action( 'wp_ajax_get_chart_data', [ __CLASS__, 'getChartData'] );
+
 	}
 
-	public function renderDashboardWidgetChart() {
+	public static function getChartData() {
 
 		RCCore::includeVendor('InvoicexpressClient/InvoicexpressInvoices');
 
 		$options = get_option( 'wpie_settings' );
 
+		$Invoices = new InvoicexpressInvoices($options['domain'], $options['api_key']);
+
+		$data = $Invoices->chart();
+
+		$labels = (array) $data->series->value;
+		$values = (array) $data->graphs->graph->value;
+
+		array_shift($labels);
+		array_shift($values);
+
+		die(json_encode([ 'labels' => $labels, 'data' => $values ]));
+
+	}
+
+	public static function renderDashboardWidgetChart() {
+
+		$options = get_option( 'wpie_settings' );
+
 		if (!empty($options)) {
 
-			$Invoices = new InvoicexpressInvoices($options['domain'], $options['api_key']);
-
-			$data = $Invoices->chart();
-
-			$labels = (array) $data->series->value;
-			$values = (array) $data->graphs->graph->value;
-
-			array_shift($labels);
-			array_shift($values);
-
-			RCCore::render('widget_dashboard_chart', [ 'labels' => $labels, 'data' => $values ]);
+			RCCore::includeScript('Chart', 'assets/js/Chart.min.js', '1.0.2');
+			RCCore::includeScript('ieapp', 'assets/js/app.js', '1.0.0');
+			RCCore::render('widget_dashboard_chart');
 
 		} else {
 
@@ -44,7 +56,7 @@ class RCDashboard implements Extension {
 
 	}
 
-	public function renderDashboardWidgetPendingPayments() {
+	public static function renderDashboardWidgetPendingPayments() {
 
 		RCCore::includeVendor('InvoicexpressClient/InvoicexpressInvoices');
 
