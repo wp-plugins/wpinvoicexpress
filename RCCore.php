@@ -36,19 +36,19 @@ class RCCore {
 
 	}
 
-	public function includeLib($name) {
+	public static function includeLib($name) {
 
 		include_once __DIR__ . '/libs/' . $name . '.php';
 
 	}
 
-	public function includeVendor($name) {
+	public static function includeVendor($name) {
 
 		include_once __DIR__ . '/vendors/' . $name . '.php';
 
 	}
 
-	public function render($template_file, $params = array()) {
+	public static function render($template_file, $params = array()) {
 
 		extract($params);
 
@@ -56,7 +56,7 @@ class RCCore {
 
 	}
 
-	public function renderWPTemplate($template_file, $params = array()) {
+	public static function renderWPTemplate($template_file, $params = array()) {
 
 		extract($params);
 
@@ -64,19 +64,19 @@ class RCCore {
 
 	}
 
-	public function getPluginUrl($file) {
+	public static function getPluginUrl($file) {
 
 		return plugins_url($file, __FILE__);
 
 	}
 
-	public function includeScript($name, $path, $version = '1.0.0') {
+	public static function includeScript($name, $path, $version = '1.0.0') {
 
 		wp_enqueue_script( $name, plugins_url($path, __FILE__), array(), $version, true );
 
 	}
 
-	public function includeCSS($name, $path, $version = '1.0.0') {
+	public static function includeCSS($name, $path, $version = '1.0.0') {
 
 		wp_enqueue_style( $name, plugins_url($path, __FILE__), array(), $version );
 
